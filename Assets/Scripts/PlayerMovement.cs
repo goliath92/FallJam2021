@@ -2,6 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -11,6 +14,9 @@ public class PlayerMovement : MonoBehaviour
     private float wallJumpCoolDown;
     private float horizontalInput;
     private bool grounded;
+    public int Ball = 0;
+
+    public TextMeshProUGUI ballText;
     
     
     
@@ -29,6 +35,13 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal");
+
+        if (Input.GetKey(KeyCode.Escape))
+            SceneManager.LoadScene("MainMenu");
+
+        if (Ball == 3)
+            SceneManager.LoadScene("MainMenu");
+        
         
         // karakteri, gidilen yöne doğru çevirme
         if(horizontalInput>0.01f)
@@ -54,7 +67,7 @@ public class PlayerMovement : MonoBehaviour
             }
 
             else
-                body.gravityScale = 2;
+                body.gravityScale = 3;
             
             if (Input.GetKey(KeyCode.Space)) 
                 Jump();
@@ -89,8 +102,14 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.gameObject.CompareTag("Ball"))
+        {
+            Ball++;
+            ballText.text = "X "+ Ball.ToString() ;
+            Destroy(other.gameObject);
+        }
        
     }
 
